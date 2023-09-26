@@ -1,10 +1,20 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
+import ReactDOM from 'react-dom';
+import App from './App'
+import store from './Components/redux/reduxStore'
 
+export let renderEntireTree = (stateData) => {
+    ReactDOM.render(
+        <App dispatch={store.dispatch.bind(store)}
+             store={store}
+             //  updateNewPost={store.updateNewPost.bind(store)} 
+            //  addPost={store.addPost.bind(store)}
+             stateData={stateData}/>, 
+        document.getElementById('root'))
+}
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-    <App />
-);
+renderEntireTree(store.getState())
 
+store.subscribe(()=>{
+    let state = store.getState();
+    renderEntireTree(state);
+})

@@ -1,81 +1,114 @@
-import React, { useState } from 'react';
-import './App.css';
+import React from "react";
+import "./index.css";
+import "./App.css";
+import Header from "./Components/Header/Header";
+import SideBar from "./Components/SideBar/SideBar";
+import Content from "./Components/Content/Content";
+import Message from "./Components/Message/Message";
+import News from "./Components/News/News";
+import Music from "./Components/Music/Music";
+import Settings from "./Components/Settings/Settings";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import MessageField from "./Components/Message/MessageField/MessageField";
 
 
-const api = {
-  key: '2a3f3e5363c9d3eec4236988ba890a3e',
-  base: 'https://api.openweathermap.org/data/2.5/'
-}
+// let PersonalMessages = (props) => {
+//   return (
+//     <Route path={'/message/'+props.name.map(i => i.name)}
+//     element={<MessageField dispatch={this.props.dispatch} store={this.props.store} name={this.props.store.getState().messagesPage.messagesPage.dialogsData}/>}
+//     />
+//   )
+// }
 
-function App() {
 
-  const [state, setState] = useState('');
-  const [weather, setWeather] = useState({});
+class Site extends React.Component {
+  render() {
+    debugger
+    return (
+      <BrowserRouter>
+        <div className="wrapperContainer">
+          <div className="container">
+            <div className="header">
+              <Header />
+            </div>
+            <div className="sidebar">
+              <SideBar />
+            </div>
+            <div className="content">
+              <Routes>
+                <Route path="/profile"
+                  element={<Content lastName="Kononovich" name="Eduard" 
+                  stateData={this.props.stateData} 
+                  // addPost={this.props.addPost}
+                  // updateNewPost={this.props.updateNewPost} 
+                  dispatch={this.props.dispatch}/>}
+                />
+                <Route path="/message" 
+                  element={<Message  dialogsData={this.props.stateData.messagesPage.messagesPage.dialogsData} />} 
+                />
+                <Route path="/news" 
+                  element={<News />} 
+                />
+                <Route path="/music" 
+                  element={<Music />} 
+                />
+                <Route path="/settings" 
+                  element={<Settings />} 
+                />
+                <Route path="/message/Dmitriy" 
+                  element={<MessageField dispatch={this.props.dispatch} store={this.props.store} />} 
+                />
 
-  const search = (e) => {
-    if(e.key === 'Enter'){
-      fetch(`${api.base}weather?q=${state}&units=metric&APPID=${api.key}`)
-        .then(res => res.json())
-        .then(result => {
-          setWeather(result);
-          setState('');
-          // console.log(weather)
-          console.log(result);
-        })
-    }
-  }
-
-  const dateBuilder = (d) => {
-    let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-    let days = ['Tuesday ' ,'Wednesday ', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday']
-  
-    let day = days[d.getDay()];
-    let date = d.getDate();
-    let month = months[d.getMonth()];
-    let year = d.getFullYear();
-
-    return `${day} ${date} ${month} ${year}`
-    }
-
-  return (
-    <div className="app">
-      <main>
-
-        <div className='search-box'>
-          <input 
-            onChange={e => setState(e.target.value)} 
-            onKeyPress={search} value={state} 
-            type='text' 
-            className='search-bar' 
-            placeholder='Search...'
-          />
-        </div>
-
-        {(typeof weather.main != 'undefined') ? (
-          <div>
-            
-            <div className='location-box'>
-
-              <div className='location'>{weather.name}, {weather.sys.country}</div>
-                <div className='date'>{dateBuilder(new Date())}</div>
-              </div>
-
-              <div className='weather-box'>
+                <Route path="/message/Andrey" 
+                  element={<MessageField dispatch={this.props.dispatch} store={this.props.store} name={this.props.store.getState().messagesPage.messagesPage.dialogsData}/>} 
+                />
                 
-                <div className="temp">
-                  {Math.round(weather.main.temp)}
-                </div>
-
-                <div className="weather">{weather.weather[0].main}</div>
-              
-              </div>
-
+                <Route path="/message/Sveta" 
+                  element={<MessageField dispatch={this.props.dispatch} store={this.props.store} />} 
+                />
+                
+                <Route path="/message/Sasha" 
+                  element={<MessageField dispatch={this.props.dispatch} store={this.props.store} />} 
+                />
+                
+                <Route path="/message/Viktor" 
+                  element={<MessageField dispatch={this.props.dispatch} store={this.props.store} />} 
+                />
+                
+                <Route path="/message/Valeriy" 
+                  element={<MessageField dispatch={this.props.dispatch} store={this.props.store} />} 
+                />
+              </Routes>
+            </div>
           </div>
-        ) : null }
-        
-      </main>
-    </div>
-  );
+        </div>
+      </BrowserRouter>
+    );
+  }
 }
 
-export default App;
+export default Site
+
+// class Button extends React.Component{
+//     constructor(){
+//         super();
+//         this.state = {count : 0,}
+//     }
+//     updateCount(){
+//         this.setState((prev)=>{
+//             return {count : prev.count + 1}
+//         })
+//     }
+//     render(){
+//         return (
+//             <button onClick={()=>this.updateCount()}>
+//                 Ckick {this.state.count} times
+//             </button>
+//         )
+//     }
+// }
+
+// ReactDOM.render(
+//     <Button/>,
+//     document.getElementById('root')
+// )
