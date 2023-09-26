@@ -1,81 +1,67 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux/es/exports";
+// import { DICREMENT, INCREMENT } from "./toolkitRedux/toolkitRedux";
+import { increment, dicrement, addTodo, removeLastTodo } from './toolkitRedux/toolkitSlice';
 import './App.css';
 
 
-const api = {
-  key: '2a3f3e5363c9d3eec4236988ba890a3e',
-  base: 'https://api.openweathermap.org/data/2.5/'
+// async
+const addAsyncTodo = () => {
+    return async dispatch => {
+        setTimeout(() => {
+            dispatch(addTodo('Async Todo'))
+        }, 2000)
+    }
 }
 
-function App() {
+function Header(){
+    const [stateOne, setStateOne] = useState(false);
+    const [stateTwo, setStateTwo] = useState(false);
+    return(
+        <div className="head">
+            <div>
+                {/* <div onClick={() => setStateOne(!stateOne)}>My Friend</div>
+                {stateOne && <ul><li>One</li><li>Two</li></ul>} */}
+                <select onClick={() => setStateOne(!stateOne)}>
+                    <option>One</option>
+                    <option>Two</option>
+                </select>
+            </div>
 
-  const [state, setState] = useState('');
-  const [weather, setWeather] = useState({});
-
-  const search = (e) => {
-    if(e.key === 'Enter'){
-      fetch(`${api.base}weather?q=${state}&units=metric&APPID=${api.key}`)
-        .then(res => res.json())
-        .then(result => {
-          setWeather(result);
-          setState('');
-          // console.log(weather)
-          console.log(result);
-        })
-    }
-  }
-
-  const dateBuilder = (d) => {
-    let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-    let days = ['Tuesday ' ,'Wednesday ', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday']
-  
-    let day = days[d.getDay()];
-    let date = d.getDate();
-    let month = months[d.getMonth()];
-    let year = d.getFullYear();
-
-    return `${day} ${date} ${month} ${year}`
-    }
-
-  return (
-    <div className="app">
-      <main>
-
-        <div className='search-box'>
-          <input 
-            onChange={e => setState(e.target.value)} 
-            onKeyPress={search} value={state} 
-            type='text' 
-            className='search-bar' 
-            placeholder='Search...'
-          />
+            <div>
+                <div onClick={() => setStateTwo(!stateTwo)}>Cities</div>
+                {stateTwo && <ul><li>Minsk</li><li>Gomel</li></ul>}
+            </div>
         </div>
+    )
+}
 
-        {(typeof weather.main != 'undefined') ? (
-          <div>
+
+function App(){
+    const count = useSelector(state => state.toolkit.count);
+    const todos = useSelector(state => state.toolkit.todos)
+    const dispatch = useDispatch();
+    return(
+        <div>
+
+            <Header />
+
+            <h1>Count: {count}</h1>
+            {/* <button onClick={() => dispatch(INCREMENT())}>INCREMENT</button>
+            <button onClick={() => dispatch(DICREMENT())}>DICREMENT</button> */}
             
-            <div className='location-box'>
 
-              <div className='location'>{weather.name}, {weather.sys.country}</div>
-                <div className='date'>{dateBuilder(new Date())}</div>
-              </div>
+            <button onClick={() => dispatch(increment())}>INCREMENT</button>
+            <button onClick={() => dispatch(dicrement())}>DICREMENT</button>
+            <button onClick={() => dispatch(removeLastTodo())}>Delete last todo</button>
+            <button onClick={() => dispatch(addTodo(prompt()))}>Add todo</button>
 
-              <div className='weather-box'>
-                
-                <div className="temp">
-                  {Math.round(weather.main.temp)}
-                </div>
-
-                <div className="weather">{weather.weather[0].main}</div>
-              
-              </div>
-
-          </div>
-        ) : null }
-        
-      </main>
-    </div>
-  );
+            <button onClick={() => dispatch(addAsyncTodo())}>Async</button>
+            <ul>
+                {todos.map((i,id) => <div key={id} onClick={() => dispatch(removeLastTodo(id))}>{ i }</div>)}
+            </ul>
+        </div>
+    )
 }
 
 export default App;

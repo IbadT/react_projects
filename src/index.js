@@ -1,10 +1,21 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 import App from './App';
-
+import { store } from './toolkitRedux';
+import { Provider } from 'react-redux';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-    <App />
-);
+  <Provider store={store}>
+      <App />
+  </Provider>
+)
 
+
+
+
+// install redux-toolkit
+
+// npm install @reduxjs/toolkit
+// npm i react-redux
+
+
+// create fold store and create store.js
