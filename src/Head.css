@@ -1,0 +1,24 @@
+.headContainer{
+    display: flex;
+    justify-content: center;
+}
+.headLogo{
+    width: 80px;
+    animation: anim infinite 3s linear;
+}
+
+@keyframes anim{
+    from{ transform: rotate(0deg) }
+    to{ transform: rotate(360deg) }
+}
+
+
+.headText:hover{
+    animation: mov 1s linear infinite;   
+}
+@keyframes mov{
+    25%{ transform: translateY(15%) }
+    50%{ transform: translateY(5%) }
+    75%{ transform: translateY(15%) }
+    100%{ transform: translateY(0%) }
+}

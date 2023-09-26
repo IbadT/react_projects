@@ -1,0 +1,25 @@
+.removebtn:hover{
+    color: red;
+    transition: all 0.3s;
+    transform: scale(1.3);
+}
+.removebtn{
+    transition: all 2s;
+    margin-top: 4px;
+    font-size: 15px;
+}
+.removebtn:active{
+    font-size: 15px;
+    transition: all 0.3s;
+}
+
+
+
+.containerText{
+    border-radius: 20px;
+}
+
+.text{
+    margin-top: 5px;
+}
+

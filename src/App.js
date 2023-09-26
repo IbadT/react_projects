@@ -1,80 +1,92 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import './App.css';
+import { addTodo, inputAll, inputDone } from './store/toolkitSlice';
+import TextValue from './TextValue';
+import { Col, Row, Tooltip, Button } from 'antd';
+import { SendOutlined } from '@ant-design/icons';
 
-
-const api = {
-  key: '2a3f3e5363c9d3eec4236988ba890a3e',
-  base: 'https://api.openweathermap.org/data/2.5/'
-}
 
 function App() {
+  const todo = useSelector(state => state.toolkit);
+  const dispatch = useDispatch();
+  const [value, setValue] = useState('');
+  const [test, setTest] = useState('');
 
-  const [state, setState] = useState('');
-  const [weather, setWeather] = useState({});
+  function handleAdd(){
 
-  const search = (e) => {
+    const current = {
+      id: todo.length>0 ? todo[0].id+1 : 0,
+      text: value[0].toUpperCase() + value.slice(1),
+      isCompleted: false
+    }
+    
+    dispatch(addTodo(current))
+    setValue('')
+  }
+
+  function handleKeyPress(e){
     if(e.key === 'Enter'){
-      fetch(`${api.base}weather?q=${state}&units=metric&APPID=${api.key}`)
-        .then(res => res.json())
-        .then(result => {
-          setWeather(result);
-          setState('');
-          // console.log(weather)
-          console.log(result);
-        })
+      handleAdd();
     }
   }
 
-  const dateBuilder = (d) => {
-    let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-    let days = ['Tuesday ' ,'Wednesday ', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday']
+  function allTasks(){
+    let res = test.filter(i => i.isCompleted === true)
+    return res
+  }
+
+  function doneTasks(){
+    // setTest(todo);
+    console.log(test)
+    // let res = test.filter(i => i.isCompleted === true)
+    // console.log(res)
+    // return res
+  }
   
-    let day = days[d.getDay()];
-    let date = d.getDate();
-    let month = months[d.getMonth()];
-    let year = d.getFullYear();
-
-    return `${day} ${date} ${month} ${year}`
-    }
-
   return (
-    <div className="app">
-      <main>
+      <div className="App">
+        <Row>
 
-        <div className='search-box'>
-          <input 
-            onChange={e => setState(e.target.value)} 
-            onKeyPress={search} value={state} 
-            type='text' 
-            className='search-bar' 
-            placeholder='Search...'
-          />
-        </div>
+          <Col>
+            <Button onClick={() => dispatch(allTasks())}>All</Button>
+          </Col>
 
-        {(typeof weather.main != 'undefined') ? (
-          <div>
-            
-            <div className='location-box'>
+          <Col>
+            <Button onClick={() => dispatch(doneTasks())}>Done</Button>
+          </Col>
 
-              <div className='location'>{weather.name}, {weather.sys.country}</div>
-                <div className='date'>{dateBuilder(new Date())}</div>
-              </div>
+          <Col>
+            <Button onClick={() => dispatch(inputDone())}>Uncompleteds</Button>
+          </Col>
 
-              <div className='weather-box'>
-                
-                <div className="temp">
-                  {Math.round(weather.main.temp)}
-                </div>
+        </Row>
 
-                <div className="weather">{weather.weather[0].main}</div>
-              
-              </div>
+        <Row>
+          <Col span={21}>
+            <input
+                style={{ paddingLeft: '20px', width: '100%', margin: '0 10px 20px 0', borderRadius: '7px'}}
+                placeholder='Add Todo...'
+                onKeyPress={e => handleKeyPress(e)} 
+                onChange={(e) => setValue(e.target.value)} 
+                value={value}
+            />
+          </Col>
 
-          </div>
-        ) : null }
-        
-      </main>
-    </div>
+          <Col span={1} offset={1}>
+            <Tooltip title="Send">
+              <Button className='reverseBtn' onClick={() => handleAdd()} type="primary" shape="circle" icon={<SendOutlined className='rev'/>} />
+            </Tooltip>
+          </Col>
+
+        </Row>
+        <Row>
+          <Col span={24}>
+            <TextValue dispatch={dispatch} todo={todo}/>
+          </Col>
+        </Row>
+        {todo.length }
+      </div>
   );
 }
 
